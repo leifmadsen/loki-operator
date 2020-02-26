@@ -3,5 +3,4 @@ kind: Loki
 metadata:
   name: example-loki
 spec:
-  # Add fields here
-  size: 3
+  size: 1

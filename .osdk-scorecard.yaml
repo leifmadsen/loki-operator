@@ -1,0 +1,14 @@
+infra.watch_lokis_crd.yaml
+infra.watch_v1alpha1_loki_cr.yaml
+
+scorecard:
+  # Setting a global scorecard option
+  output: text
+  plugins:
+    - basic:
+        cr-manifest:
+          - "deploy/crds/infra.watch_v1alpha1_loki_cr.yaml"
+    - olm:
+        cr-manifest:
+          - "deploy/crds/infra.watch_v1alpha1_loki_cr.yaml"
+        csv-path: "deploy/olm-catalog/loki-operator/0.1.0/loki-operator.v0.1.0.clusterserviceversion.yaml"

@@ -1,2 +1,18 @@
 ---
-# tasks file for loki
+- name: Write out configmap for loki
+  template:
+    dest: /tmp/configmap.yaml
+    src: "configmap.yaml.j2"
+
+- name: Loki ConfigMap
+  k8s:
+    src: /tmp/configmap.yaml
+
+- name: Create deployment for Loki
+  template:
+    dest: /tmp/deployment.yaml
+    src: deployment.yaml.j2
+
+- name: Deploy Loki
+  k8s:
+    src: /tmp/deployment.yaml
