@@ -16,11 +16,55 @@ metadata:
         }
       ]
     capabilities: Basic Install
+    categories: Monitoring
+    certified: "false"
+    containerImage: quay.io/leifmadsen/loki-logging-operator:latest
+    createdAt: "2020-02-26T14:49:00Z"
+    description: Loki Operator
+    repository: https://github.com/leifmadsen/loki-operator
+    support: Red Hat (CloudOps)
   name: loki-operator.v0.1.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
-  customresourcedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: Instance of Loki
+      displayName: Loki
+      kind: Loki
+      name: lokis.infra.watch
+      resources:
+      - kind: Pod
+        name: ""
+        version: v1
+      - kind: Deployments
+        name: ""
+        version: v1
+      - kind: ReplicaSets
+        name: ""
+        version: v1
+      - kind: Services
+        name: ""
+        version: v1
+      - kind: ConfigMaps
+        name: ""
+        version: v1
+      - kind: SmartGateways
+        name: ""
+        version: v2alpha1
+      specDescriptors:
+      - description: Number of Loki instances to deploy
+        displayName: Size
+        path: size
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:number
+      statusDescriptors:
+      - description: Conditions provided by deployment
+        displayName: Conditions
+        path: conditions
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.conditions
+      version: v1alpha1
   description: Deployment of an instance of Loki
   displayName: Loki Operator
   install:
@@ -43,7 +87,7 @@ spec:
                 - /usr/local/bin/ao-logs
                 - /tmp/ansible-operator/runner
                 - stdout
-                image: quay.io/leifmadsen/loki-operator:latest
+                image: quay.io/leifmadsen/loki-logging-operator:latest
                 imagePullPolicy: Always
                 name: ansible
                 resources: {}
@@ -64,7 +108,7 @@ spec:
                   value: loki-operator
                 - name: ANSIBLE_GATHERING
                   value: explicit
-                image: quay.io/leifmadsen/loki-operator:latest
+                image: quay.io/leifmadsen/loki-logging-operator:latest
                 imagePullPolicy: Always
                 name: operator
                 resources: {}
@@ -162,6 +206,17 @@ spec:
     type: MultiNamespace
   - supported: false
     type: AllNamespaces
+  keywords:
+  - logging
+  - telemetry
+  - events
+  - monitoring
+  links:
+  - name: Source Code
+    url: https://github.com/leifmadsen/loki-operator
+  maintainers:
+  - email: support@redhat.com
+    name: Red Hat CloudOps DFG
   maturity: alpha
   provider:
     name: Red Hat, Inc.
