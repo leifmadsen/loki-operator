@@ -24,6 +24,12 @@ rules:
   - update
   - watch
 - apiGroups:
+  - extensions
+  resources:
+  - deployments
+  verbs:
+  - '*'
+- apiGroups:
   - apps
   resources:
   - deployments

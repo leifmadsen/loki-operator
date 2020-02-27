@@ -22,7 +22,7 @@ AUTH_TOKEN=$(curl -sH "Content-Type: application/json" \
 -XPOST https://quay.io/cnr/api/v1/users/login \
 -d '{"user": {"username": "'"${USERNAME}"'", "password": "'"${PASSWORD}"'"}}' | jq -r '.token')
 
-# The application registry name and the container registry name can not be the same on quay.io. Same as we do with the smart-gateway-operator we remove the first
+# The application registry name and the container registry name can not be the same on quay.io. Same as we do with the loki-operator we remove the first
 # instance of the hyphen for the application registry (servicetelemetry-operator). For the container registry we match the git repository name (service-telemetry-operator).
 operator-courier push "./deploy/olm-catalog/loki-operator" "${ORGANIZATION}" "loki-operator" "${CSV_VERSION}-${UNIXDATE}" "${AUTH_TOKEN}"
 

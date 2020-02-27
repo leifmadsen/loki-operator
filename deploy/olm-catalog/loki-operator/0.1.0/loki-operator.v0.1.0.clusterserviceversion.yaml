@@ -24,7 +24,7 @@ metadata:
     repository: https://github.com/leifmadsen/loki-operator
     support: Red Hat (CloudOps)
   name: loki-operator.v0.1.0
-  namespace: placeholder
+  namespace: service-telemetry
 spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
