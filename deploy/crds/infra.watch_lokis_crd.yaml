@@ -13,11 +13,45 @@ spec:
   version: v1alpha1
   subresources:
     status: {}
-  validation:
-    openAPIV3Schema:
-      type: object
-      x-kubernetes-preserve-unknown-fields: true
   versions:
   - name: v1alpha1
     served: true
     storage: true
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        spec:
+          description: 'LokiSpec is a specification of the desired behavior
+            of the Loki deployment. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
+          properties:
+            size:
+              description: Size sets the number of replicas to create. Defaults to 1.
+              type: integer
+        status:
+          description: Status results
+          properties:
+            conditions:
+              description: The resulting conditions
+              items:
+                properties:
+                  status:
+                    type: string
+                  type:
+                    type: string
+                  reason:
+                    type: string
+                  lastTransitionTime:
+                    type: string
+                type: object
+              type: array
+          type: object
