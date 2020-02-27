@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: '{{ meta.name }}-loki'
+  namespace: '{{ meta.namespace }}'
+  labels:
+    application: {{ meta.name }}-loki
+spec:
+  ports:
+  - name: loki-api
+    port: 3100
+    targetPort: 3100
+    protocol: TCP
+  selector:
+    application: {{ meta.name }}-loki

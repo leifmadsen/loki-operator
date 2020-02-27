@@ -10,3 +10,4 @@
   loop:
     - name: configmap.yaml.j2
     - name: deployment.yaml.j2
+    - name: service.yaml.j2
