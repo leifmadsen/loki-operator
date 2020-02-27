@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: '{{ meta.name }}-loki'
+  namespace: '{{ meta.namespace }}'
+spec:
+  replicas: {{ size }}
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      application: {{ meta.name }}-loki
+  template:
+    metadata:
+      labels:
+        application: {{ meta.name }}-loki
+    spec:
+      containers:
+      - image: '{{ container_image_path }}'
+        imagePullPolicy: IfNotPresent
+        name: {{ meta.name }}-loki
+        volumeMounts:
+        - name: loki-config
+          mountPath: /mnt/config
+        args:
+          - '-config.file=/mnt/config/loki-config.yaml'
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+        ports:
+        - name: port-3100
+          containerPort: 3100
+          protocol: TCP
+      volumes:
+      - name: loki-config
+        configMap:
+          name: "{{ meta.name }}-loki-config"

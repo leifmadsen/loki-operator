@@ -1,0 +1,224 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "infra.watch/v1alpha1",
+          "kind": "Loki",
+          "metadata": {
+            "name": "example-loki"
+          },
+          "spec": {
+            "size": 1
+          }
+        }
+      ]
+    capabilities: Basic Install
+    categories: Monitoring
+    certified: "false"
+    containerImage: quay.io/leifmadsen/loki-logging-operator:latest
+    createdAt: "2020-02-26T14:49:00Z"
+    description: Loki Operator
+    repository: https://github.com/leifmadsen/loki-operator
+    support: Red Hat (CloudOps)
+  name: loki-operator.v0.1.0
+  namespace: service-telemetry
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: Instance of Loki
+      displayName: Loki
+      kind: Loki
+      name: lokis.infra.watch
+      resources:
+      - kind: Pod
+        name: ""
+        version: v1
+      - kind: Deployments
+        name: ""
+        version: v1
+      - kind: ReplicaSets
+        name: ""
+        version: v1
+      - kind: Services
+        name: ""
+        version: v1
+      - kind: ConfigMaps
+        name: ""
+        version: v1
+      - kind: SmartGateways
+        name: ""
+        version: v2alpha1
+      specDescriptors:
+      - description: Number of Loki instances to deploy
+        displayName: Size
+        path: size
+        x-descriptors:
+        - urn:alm:descriptor:com.tectonic.ui:number
+      statusDescriptors:
+      - description: Conditions provided by deployment
+        displayName: Conditions
+        path: conditions
+        x-descriptors:
+        - urn:alm:descriptor:io.kubernetes.conditions
+      version: v1alpha1
+  description: Deployment of an instance of Loki
+  displayName: Loki Operator
+  install:
+    spec:
+      deployments:
+      - name: loki-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              name: loki-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                name: loki-operator
+            spec:
+              containers:
+              - command:
+                - /usr/local/bin/ao-logs
+                - /tmp/ansible-operator/runner
+                - stdout
+                image: quay.io/leifmadsen/loki-logging-operator:latest
+                imagePullPolicy: Always
+                name: ansible
+                resources: {}
+                volumeMounts:
+                - mountPath: /tmp/ansible-operator/runner
+                  name: runner
+                  readOnly: true
+              - env:
+                - name: WATCH_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.annotations['olm.targetNamespaces']
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: loki-operator
+                - name: ANSIBLE_GATHERING
+                  value: explicit
+                image: quay.io/leifmadsen/loki-logging-operator:latest
+                imagePullPolicy: Always
+                name: operator
+                resources: {}
+                volumeMounts:
+                - mountPath: /tmp/ansible-operator/runner
+                  name: runner
+              serviceAccountName: loki-operator
+              volumes:
+              - emptyDir: {}
+                name: runner
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          - services
+          - services/finalizers
+          - endpoints
+          - persistentvolumeclaims
+          - events
+          - configmaps
+          - secrets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - deployments
+          - daemonsets
+          - replicasets
+          - statefulsets
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - monitoring.coreos.com
+          resources:
+          - servicemonitors
+          verbs:
+          - get
+          - create
+        - apiGroups:
+          - apps
+          resourceNames:
+          - loki-operator
+          resources:
+          - deployments/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - ""
+          resources:
+          - pods
+          verbs:
+          - get
+        - apiGroups:
+          - apps
+          resources:
+          - replicasets
+          - deployments
+          verbs:
+          - get
+        - apiGroups:
+          - infra.watch
+          resources:
+          - '*'
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        serviceAccountName: loki-operator
+    strategy: deployment
+  installModes:
+  - supported: true
+    type: OwnNamespace
+  - supported: true
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: false
+    type: AllNamespaces
+  keywords:
+  - logging
+  - telemetry
+  - events
+  - monitoring
+  links:
+  - name: Source Code
+    url: https://github.com/leifmadsen/loki-operator
+  maintainers:
+  - email: support@redhat.com
+    name: Red Hat CloudOps DFG
+  maturity: alpha
+  provider:
+    name: Red Hat, Inc.
+  replaces: loki-operator.v0.0.0
+  version: 0.1.0

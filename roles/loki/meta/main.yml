@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Red Hat CloudOps DFG
+  description: Loki Ansible Operator
+  company: Red Hat, Inc.
+
+  license: Apache
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: Kubernetes
+    versions:
+    - 1.13
+
+  galaxy_tags: []
+
+dependencies: []
+collections:
+- operator_sdk.util

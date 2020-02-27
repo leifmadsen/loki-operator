@@ -1,0 +1,13 @@
+---
+- name: "Get information about the cluster"
+  set_fact:
+    api_groups: "{{ lookup('k8s', cluster_info='api_groups') }}"
+
+- name: "Setup Loki"
+  k8s:
+    state: "{{ state }}"
+    definition: "{{ lookup('template', item.name) | from_yaml }}"
+  loop:
+    - name: configmap.yaml.j2
+    - name: deployment.yaml.j2
+    - name: service.yaml.j2
